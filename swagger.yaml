@@ -21,7 +21,7 @@ tags:
 - name: "Review"
   description: "レビューに関する操作"
 - name: "Admin"
-  description: "店舗代表者に関する操作"
+  description: "管理者に関する操作"
 
 paths:
   /register:
@@ -60,7 +60,95 @@ paths:
               message:
                 type: "string"
                 example: "User successfully registered"
-          
+        "400":
+          description: "バリデーションエラー"
+          schema:
+            properties:
+              message:
+                example: "{\"email\":[\"The email field is required.\"],\"password\":[\"The password must be at least 6 characters.\"]}"
+              
+  /login:
+    post:
+      tags:
+      - "Login"
+      summary: "ログイン"
+      description: "ログインをします"
+      operationId: "Login"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            email:
+              type: "string"
+              example: "email@email.com"
+            password:
+              type: "string"
+              example: "password"
+      responses:
+        "200":
+          description: "ログイン完了"
+          schema:
+            properties:
+              access_token:
+                type: "string"
+                example: "example.yJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9sb2dpbiIsImlhdCI6MTY0MzAxNDE3MiwiZXhwIjoxNjQzMDE3NzcyLCJuYmYiOjE2NDMwMTQxNzIsImp0aSI6IkFNVlZtamI2aHB1QThRRWQiLCJzdWIiOjIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.86Lkrv0CjEuvqTRsrDlPQLMPptelwG3EvLHb6psEYJY"
+              token_type:
+                type: "string"
+                example: bearer
+              expires_in:
+                type: "integer"
+                example: 3600
+              user: 
+                type: object
+                example:
+                  id: 1
+                  name: test
+                  email: test@test.com 
+                  email_verified_at: null
+                  administrator: null
+                  created_at: null
+                  updated_at: null
+              auth:
+                type: "boolean"
+                example: true
+        "401":
+          description: "エラー"
+          schema:
+            properties:
+              error:
+                type: "string"
+                example: "Unauthorized"
+  /logout:
+    post:
+      tags:
+      - "Logout"
+      summary: "ログアウト"
+      description: "ログアウトをします"
+      operationId: "Logout"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "ログアウト完了"
+          schema:
+            properties:
+              message:
+               type: "string"
+               example: "User successfully signed out"
+              auth:
+                type: "boolean"
+                example: false
+              
   /users:
     get:
       tags:
@@ -87,157 +175,14 @@ paths:
                     administrator: null
                     created_at: null
                     updated_at: null
+                  - id: 2
+                    name: "test"
+                    email: "test@test.com"
+                    email_verified_at": null
+                    administrator: null
+                    created_at: null
+                    updated_at: null
                     
-
-  /favorites/{user_id}:
-    get:
-      tags:
-      - "Favorite"
-      summary: "ユーザーお気に入り情報一覧表示"
-      description: "ユーザーのお気に入り情報一覧を表示します"
-      operationId: "getFavorite"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "path"
-        name: "user_id"
-        type: "number"
-        description: "ユーザーID"
-        required: true
-      responses:
-        "200":
-          description: "ユーザーお気に入り取得完了"
-          schema:
-            type: "object"
-            properties:
-              data:
-                example:
-                  - id: "1" 
-                    user_id: "1"
-                    restaurant_id: "1"
-                    created_at: "null"
-                    updated_at: "null"
-                    restaurant:
-                      id: "1"
-                      name: "仙人"
-                      prefecture_id: "1"
-                      genre_id: "1"
-                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
-                      description: "料理長厳選の食材から作る寿司を用いたコースをぜひお楽しみください。食材・味・価格、お客様の満足度を徹底的に追及したお店です。特別な日のお食事、ビジネス接待まで気軽に使用することができます。"
-                    　created_at: "null"
-                    　updated_at: "null"
-                    genre: 
-                      id: "1"
-                      name: "寿司"
-                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
-                      created_at: "null"
-                      updated_at: "null"
-                    prefucture:
-                      id: "1"
-                      name: "東京都"
-                      created_at: "null"
-                      updated_at: "null"
-                  - id: "2" 
-                    user_id: "1"
-                    restaurant_id: "1"
-                    created_at: "null"
-                    updated_at: "null"
-                    restaurant:
-                      id: "2"
-                      name: "牛角"
-                      prefecture_id: "1"
-                      genre_id: "2"
-                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
-                      description: "焼肉業界で20年間経験を積み、肉を熟知したマスターによる実力派焼肉店。長年の実績とお付き合いをもとに、なかなか食べられない希少部位も仕入れております。また、ゆったりとくつろげる空間はお仕事終わりの一杯や女子会にぴったりです。"
-                      created_at: "null"
-                    　updated_at: "null"
-                    genre: 
-                      id: "2"
-                      name: "焼肉"
-                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/yakiniku.jpg"
-                      created_at: "null"
-                      updated_at: "null"
-                    prefucture:
-                      id: "1"
-                      name: "東京都"
-                      created_at: "null"
-                      updated_at: "null"
-                      
-        "404":
-          description: "お気に入りがありません"
-          schema:
-            type: "object"
-            properties:
-              message:
-                type: "string"
-                example: "Not found"
-  /favorites:
-    post:
-      tags:
-      - "Favorite"
-      summary: "お気に入り店舗登録"
-      description: "お気に入り店舗の登録をします"
-      operationId: "createFavorite"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            restaurant_id:
-              type: "string"
-              example: "1"
-            user_id:
-              type: "string"
-              example: "1"
-      responses: 
-        "200":
-          description: "お気に入り登録完了"
-          schema:
-            properties:
-              message:
-                type: "string"
-                example: "Favorite created successfully"
-                
-    delete:
-      tags:
-      - "Favorite"
-      summary: "お気に入り店舗削除"
-      description: "お気に入り店舗の削除をします"
-      operationId: "deleteFavorite"
-      consumes:
-      - "application/json"
-      produces:
-      - "application/json"
-      parameters:
-      - in: "body"
-        name: "body"
-        required: true
-        schema:
-          type: "object"
-          properties:
-            restaurant_id:
-              type: "string"
-              example: "1"
-            user_id:
-              type: "string"
-              example: "1"
-      responses:
-        "200":
-          description: "お気に入り削除完了"
-          schema:
-            properties:
-              message:
-                type: "string"
-                example: "Favorite deleted successfully"
-
   /restaurants:
     get:
       tags:
@@ -261,33 +206,33 @@ paths:
                 genre_id: "1"
                 image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
                 description: "料理長厳選の食材から作る寿司を用いたコースをぜひお楽しみください。食材・味・価格、お客様の満足度を徹底的に追及したお店です。特別な日のお食事、ビジネス接待まで気軽に使用することができます。"
-              　created_at: "null"
-              　updated_at: "null"
-              genre: 
-                id: "1"
-                name: "寿司"
-                image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
-                created_at: "null"
+                created_at: "nulls"
                 updated_at: "null"
-              prefucture:
-                id: "1"
-                name: "東京都"
-                created_at: "null"
-                updated_at: "null"
-              favorites:
-              - id: "1"
-                user_id: "2"
-                restaurant_id: "1"
-                created_at: "null"
-                updated_at: "null"
-              reviews:
-              - id: "1"
-                review_content: "最高に美味しかったです。またきます"
-                user_id: "2"
-                restaurant_id: "1"
-                num_of_stars: "4"
-                created_at: "null"
-                updated_at: "null"
+                genre: 
+                  id: "1"
+                  name: "寿司"
+                  image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
+                  created_at: "null"
+                  updated_at: "null"
+                prefucture:
+                  id: "1"
+                  name: "東京都"
+                  created_at: "null"
+                  updated_at: "null"
+                favorites:
+                - id: "1"
+                  user_id: "2"
+                  restaurant_id: "1"
+                  created_at: "null"
+                  updated_at: "null"
+                reviews:
+                - id: "1"
+                  review_content: "最高に美味しかったです。またきます"
+                  user_id: "2"
+                  restaurant_id: "1"
+                  num_of_stars: "4"
+                  created_at: "null"
+                  updated_at: "null"
                 
               - id: "2"
                 name: "仙人"
@@ -432,25 +377,25 @@ paths:
                 description: "料理長厳選の食材から作る寿司を用いたコースをぜひお楽しみください。食材・味・価格、お客様の満足度を徹底的に追及したお店です。特別な日のお食事、ビジネス接待まで気軽に使用することができます。"
                 created_at: "null"
                 updated_at: "null"
-              genre: 
-                id: "1"
-                name: "寿司"
-                image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
-                created_at: "null"
-                updated_at: "null"
-              prefucture:
-                id: "1"
-                name: "東京都"
-                created_at: "null"
-                updated_at: "null"
-              reviews:
-              - id: "1"
-                review_content: "最高に美味しかったです。またきます"
-                user_id: "2"
-                restaurant_id: "1"
-                num_of_stars: "4"
-                created_at: "null"
-                updated_at: "null"
+                genre: 
+                  id: "1"
+                  name: "寿司"
+                  image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
+                  created_at: "null"
+                  updated_at: "null"
+                prefucture:
+                  id: "1"
+                  name: "東京都"
+                  created_at: "null"
+                  updated_at: "null"
+                reviews:
+                - id: "1"
+                  review_content: "最高に美味しかったです。またきます"
+                  user_id: "2"
+                  restaurant_id: "1"
+                  num_of_stars: "4"
+                  created_at: "null"
+                  updated_at: "null"
                 
         "404":
           description: "店舗データがありません"
@@ -465,8 +410,8 @@ paths:
     get:
       tags:
       - "Restaurant"
-      summary: "店舗検索"
-      description: "ユーザーマイページで表示されるお気に入りと店舗情報の表示をします。"
+      summary: "ユーザー店舗情報"
+      description: "店舗に対するユーザー側のお気に入りと店舗情報の表示をします。"
       operationId: "mypageRestaurant"
       produces:
       - "application/json"
@@ -513,14 +458,98 @@ paths:
                       created_at: "null"
                       updated_at: "null"
 
-  
-  /login:
+
+  /favorites/{user_id}:
+    get:
+      tags:
+      - "Favorite"
+      summary: "ユーザーお気に入り情報一覧表示"
+      description: "ユーザーのお気に入り情報一覧を表示します"
+      operationId: "getFavorite"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "path"
+        name: "user_id"
+        type: "number"
+        description: "ユーザーID"
+        required: true
+      responses:
+        "200":
+          description: "ユーザーお気に入り取得完了"
+          schema:
+            type: "object"
+            properties:
+              data:
+                example:
+                  - id: "1" 
+                    user_id: "1"
+                    restaurant_id: "1"
+                    created_at: "null"
+                    updated_at: "null"
+                    restaurant:
+                      id: "1"
+                      name: "仙人"
+                      prefecture_id: "1"
+                      genre_id: "1"
+                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
+                      description: "料理長厳選の食材から作る寿司を用いたコースをぜひお楽しみください。食材・味・価格、お客様の満足度を徹底的に追及したお店です。特別な日のお食事、ビジネス接待まで気軽に使用することができます。"
+                      created_at: "nulls"
+                      updated_at: "null"
+                    genre: 
+                      id: "1"
+                      name: "寿司"
+                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
+                      created_at: "null"
+                      updated_at: "null"
+                    prefucture:
+                      id: "1"
+                      name: "東京都"
+                      created_at: "null"
+                      updated_at: "null"
+                  - id: "2" 
+                    user_id: "1"
+                    restaurant_id: "1"
+                    created_at: "null"
+                    updated_at: "null"
+                    restaurant:
+                      id: "2"
+                      name: "牛角"
+                      prefecture_id: "1"
+                      genre_id: "2"
+                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
+                      description: "焼肉業界で20年間経験を積み、肉を熟知したマスターによる実力派焼肉店。長年の実績とお付き合いをもとに、なかなか食べられない希少部位も仕入れております。また、ゆったりとくつろげる空間はお仕事終わりの一杯や女子会にぴったりです。"
+                      created_at: "null"
+                      updated_at: "null"
+                    genre: 
+                      id: "2"
+                      name: "焼肉"
+                      image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/yakiniku.jpg"
+                      created_at: "null"
+                      updated_at: "null"
+                    prefucture:
+                      id: "1"
+                      name: "東京都"
+                      created_at: "null"
+                      updated_at: "null"
+                      
+        "404":
+          description: "お気に入りがありません"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+                example: "Not found"
+  /favorites:
     post:
       tags:
-      - "Login"
-      summary: "ログイン"
-      description: "ログインをします"
-      operationId: "Login"
+      - "Favorite"
+      summary: "お気に入り店舗登録"
+      description: "お気に入り店舗の登録をします"
+      operationId: "createFavorite"
       consumes:
       - "application/json"
       produces:
@@ -532,70 +561,53 @@ paths:
         schema:
           type: "object"
           properties:
-            email:
+            restaurant_id:
               type: "string"
-              example: "email@email.com"
-            password:
+              example: "1"
+            user_id:
               type: "string"
-              example: "password"
-      responses:
+              example: "1"
+      responses: 
         "200":
-          description: "ログイン完了"
+          description: "お気に入り登録完了"
           schema:
             properties:
-              access_token:
+              message:
                 type: "string"
-                example: "example.yJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFwvYXBpXC9sb2dpbiIsImlhdCI6MTY0MzAxNDE3MiwiZXhwIjoxNjQzMDE3NzcyLCJuYmYiOjE2NDMwMTQxNzIsImp0aSI6IkFNVlZtamI2aHB1QThRRWQiLCJzdWIiOjIsInBydiI6IjIzYmQ1Yzg5NDlmNjAwYWRiMzllNzAxYzQwMDg3MmRiN2E1OTc2ZjcifQ.86Lkrv0CjEuvqTRsrDlPQLMPptelwG3EvLHb6psEYJY"
-              token_type:
-                type: "string"
-                example: bearer
-              expires_in:
-                type: "integer"
-                example: 3600
-              user: 
-                type: object
-                example:
-                  id: 1
-                  name: test
-                  email: test@test.com 
-                  email_verified_at: null
-                  administrator: null
-                  created_at: null
-                  updated_at: null
-              auth:
-                type: "boolean"
-                example: true
-        "401":
-          description: "エラー"
-          schema:
-            properties:
-              error:
-                type: "string"
-                example: "Unauthorized"
-  /logout:
-    post:
+                example: "Favorite created successfully"
+                
+    delete:
       tags:
-      - "Logout"
-      summary: "ログアウト"
-      description: "ログアウトをします"
-      operationId: "Logout"
+      - "Favorite"
+      summary: "お気に入り店舗削除"
+      description: "お気に入り店舗の削除をします"
+      operationId: "deleteFavorite"
       consumes:
       - "application/json"
       produces:
       - "application/json"
-      parameters: []
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            restaurant_id:
+              type: "string"
+              example: "1"
+            user_id:
+              type: "string"
+              example: "1"
       responses:
         "200":
-          description: "ログアウト完了"
+          description: "お気に入り削除完了"
           schema:
             properties:
               message:
-               type: "string"
-               example: "User successfully signed out"
-              auth:
-                type: "boolean"
-                example: false
-              
+                type: "string"
+                example: "Favorite deleted successfully"
+
   /reservations/{user_id}:
     get:
       tags:
@@ -625,19 +637,19 @@ paths:
                 genre_id: "1"
                 image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
                 description: "料理長厳選の食材から作る寿司を用いたコースをぜひお楽しみください。食材・味・価格、お客様の満足度を徹底的に追及したお店です。特別な日のお食事、ビジネス接待まで気軽に使用することができます。"
-              　created_at: "null"
-              　updated_at: "null"
-              genre: 
-                id: "1"
-                name: "寿司"
-                image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
                 created_at: "null"
                 updated_at: "null"
-              prefucture:
-                id: "1"
-                name: "東京都"
-                created_at: "null"
-                updated_at: "null"
+                genre: 
+                  id: "1"
+                  name: "寿司"
+                  image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
+                  created_at: "null"
+                  updated_at: "null"
+                prefucture:
+                  id: "1"
+                  name: "東京都"
+                  created_at: "null"
+                  updated_at: "null"
         "404":
           description: "データがありません"
           schema:
@@ -788,25 +800,16 @@ paths:
                 user_id: "1"
                 restrant_id: "1"
                 num_of_stars: "4"
-              　created_at: "null"
-              　updated_at: "null"
-              restaurant: 
-                id: "1"
-                name: "仙人"
-                prefecture_id: "1"
-                genre_id: "1"
-                image_url: "https://coachtech-matter.s3-ap-northeast-1.amazonaws.com/image/sushi.jpg"
-                description: "料理長厳選の食材から作る寿司を用いたコースをぜひお楽しみください。食材・味・価格、お客様の満足度を徹底的に追及したお店です。特別な日のお食事、ビジネス接待まで気軽に使用することができます。"
                 created_at: "null"
                 updated_at: "null"
-              user:
-                id: "1"
-                name: "test"
-                email: "test@test.com"
-                email_verified_at: "null"
-                administrator: "null"
-                created_at: "null"
-                updated_at: "null"
+                user:
+                  id: "1"
+                  name: "test"
+                  email: "test@test.com"
+                  email_verified_at: "null"
+                  administrator: "null"
+                  created_at: "null"
+                  updated_at: "null"
         "404":
           description: "データがありません"
           schema:
@@ -907,7 +910,7 @@ paths:
         schema:
           type: "object"
           properties:
-            restaurant_id:
+            id:
               type: "string"
               example: "1"
             user_id:
@@ -1157,14 +1160,6 @@ paths:
               message:
                 type: "object"
                 example: "Restaurant created successfully"
-        "404":
-          description: "店舗データがありません"
-          schema:
-            type: "object"
-            properties:
-              message:
-                type: "string"
-                example: "Not found"
     put:
       tags:
       - "Admin"
@@ -1203,14 +1198,6 @@ paths:
               message:
                 type: "object"
                 example: "Restaurant updated successfully"
-        "404":
-          description: "店舗データがありません"
-          schema:
-            type: "object"
-            properties:
-              message:
-                type: "string"
-                example: "Not found"
     delete:
         tags:
         - "Admin"
