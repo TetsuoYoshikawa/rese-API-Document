@@ -937,7 +937,7 @@ paths:
       tags:
       - "Admin"
       summary: "ユーザー全てお気に入り情報一覧表示"
-      description: "ユーザー全てのお気に入り情報一覧を表示します"
+      description: "ユーザー全てのお気に入り情報一覧を表示します。ただし、管理者でログインしていなければ操作はできません。"
       operationId: "getAdminfavorite"
       consumes:
       - "application/json"
@@ -1030,7 +1030,7 @@ paths:
       tags:
       - "Admin"
       summary: "ユーザー全ての予約情報一覧表示"
-      description: "ユーザー全ての予約情報一覧を表示します"
+      description: "ユーザー全ての予約情報一覧を表示します。ただし、管理者でログインしていなければ操作はできません。"
       operationId: "getAdminreservation"
       consumes:
       - "application/json"
@@ -1123,7 +1123,7 @@ paths:
       tags:
       - "Admin"
       summary: "店舗追加"
-      description: "店舗を追加します"
+      description: "店舗を追加します。ただし、管理者でログインしていなければ操作はできません。"
       operationId: "createRestaurant"
       consumes:
       - "application/json"
@@ -1164,7 +1164,7 @@ paths:
       tags:
       - "Admin"
       summary: "店舗情報更新"
-      description: "店舗情報の更新をします"
+      description: "店舗情報の更新をします。ただし、管理者でログインしていなければ操作はできません。"
       operationId: "updateRestaurant"
       consumes:
       - "application/json"
@@ -1202,7 +1202,7 @@ paths:
         tags:
         - "Admin"
         summary: "店舗削除"
-        description: "店舗を削除する"
+        description: "店舗を削除する。ただし、管理者でログインしていなければ操作はできません。"
         operationId: "deleteRestaurant"
         consumes:
         - "application/json"
