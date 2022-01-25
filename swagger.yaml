@@ -162,7 +162,7 @@ paths:
       - "application/json"
       responses:
         "200":
-          description: "ユーザーお気に入り店舗取得完了"
+          description: "ユーザー情報取得完了"
           schema:
             type: "object"
             properties:
